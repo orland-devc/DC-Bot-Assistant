@@ -24,6 +24,7 @@ class ReminderService {
         const clients = this.readJSONFile('./users/clients.json');
         const employees = this.readJSONFile('./users/employee.json');
         return [...clients, ...employees];
+        // return [...employees];
     }
 
     createButton(id, label, style, emoji) {
@@ -75,10 +76,10 @@ class ReminderService {
     }
 
     scheduleReminders() {
-        cron.schedule('06 13 * * *', () => this.sendTimeInReminder());
-        cron.schedule('0 8 * * *', () => this.sendTimeInReminder());
-        cron.schedule('30 13 * * *', () => this.sendTimeOutReminder());
-        cron.schedule('0 17 * * *', () => this.sendTimeOutReminder());
+        cron.schedule('28 10 * * *', () => this.sendTimeInReminder());
+        // cron.schedule('0 8 * * *', () => this.sendTimeInReminder());
+        // cron.schedule('30 13 * * *', () => this.sendTimeOutReminder());
+        // cron.schedule('0 17 * * *', () => this.sendTimeOutReminder());
         console.log("Reminders scheduled successfully");
     }
 }

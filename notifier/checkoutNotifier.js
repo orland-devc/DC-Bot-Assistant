@@ -1,27 +1,27 @@
-const { EmbedBuilder } = require("discord.js");
-
-async function sendCheckoutNotification(client, discord_user_id, admin_name) {
+async function sendCheckoutNotification(client, discordUserId, adminName) {
     try {
-        const user = await client.users.fetch(discord_user_id);
+        const user = await client.users.fetch(discordUserId);
+        const now = new Date();
+        const formattedTime = now.toLocaleString('en-US', { 
+            month: 'long', day: 'numeric', 
+            hour: 'numeric', minute: '2-digit', hour12: true 
+        });
 
-        if (user) {
-            const embed = new EmbedBuilder()
-                .setTitle("✅ Time-Out Notification")
-                .setDescription(`${admin_name} checked you out. Time in closed.`)
-                .setColor("#FFA500")
-                .setTimestamp();
+        const message = `📢 **${adminName}** checked out **${user.displayName}** at **${formattedTime}**.`;
 
-            await user.send({ embeds: [embed] });
-            console.log(`Checkout notification sent to ${user.tag}`);
-            return { success: true, message: "DM sent successfully!" };
+        const guild = await client.guilds.fetch(process.env.SERVER_ID);
+        const channel = await guild.channels.fetch(process.env.CHANNEL_ID);
+
+        if (channel && channel.isTextBased()) {
+            await channel.send(message);
+            return { success: true, message: "Notification sent successfully." };
+        } else {
+            console.error("❌ Channel not found or is not text-based.");
+            return { success: false, message: "Channel not found or invalid." };
         }
-
-        console.log(`User with ID ${discord_user_id} not found.`);
-        return { success: false, message: "User not found." };
-
     } catch (error) {
-        console.error(`Failed to send checkout notification:`, error);
-        return { success: false, message: "Failed to send DM." };
+        console.error("❌ Error sending checkout notification:", error);
+        return { success: false, message: "Failed to send notification." };
     }
 }
 
